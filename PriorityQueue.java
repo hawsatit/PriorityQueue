@@ -70,14 +70,20 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * Adds value v to this priority queue.
      * @param v the value to add */
     public void add(T v) {
+        ensureCapacity();
+
         data[size] = v;
         int curIndex = size;
-        while (v.compareTo(data[getParent(curIndex)]) > 0){
-            ensureCapacity();
+        while (!isParent(curIndex) && v.compareTo(data[getParent(curIndex)]) > 0){
             swap(curIndex, getParent(curIndex), data);
             curIndex = getParent(curIndex);
-            this.size++;
         }
+
+        this.size++;
+    }
+
+    private boolean isParent(int curIndex) {
+        return getParent(curIndex) == -1;
     }
 
     private static <T> void swap(int ind1, int ind2, T[] data){
@@ -96,10 +102,18 @@ public class PriorityQueue<T extends Comparable<? super T>> {
         swap(0, size - 1, data);
         int currentIndex = 0;
         while(canPercolate(currentIndex)){
-            if(data[getLeftChild(currentIndex)].compareTo(data[getRightChild(currentIndex)]) > 0){
+            if (leftChildIsValid(currentIndex) && rightChildIsValid(currentIndex)){
+                if(data[getLeftChild(currentIndex)].compareTo(data[getRightChild(currentIndex)]) > 0){
+                    swap(currentIndex, getLeftChild(currentIndex), data);
+                    currentIndex = getLeftChild(currentIndex);
+                } else {
+                    swap(currentIndex, getRightChild(currentIndex), data);
+                    currentIndex = getRightChild(currentIndex);
+                }
+            } else if (leftChildIsValid(currentIndex)){
                 swap(currentIndex, getLeftChild(currentIndex), data);
                 currentIndex = getLeftChild(currentIndex);
-            } else {
+            } else { 
                 swap(currentIndex, getRightChild(currentIndex), data);
                 currentIndex = getRightChild(currentIndex);
             }
@@ -109,7 +123,18 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     }
 
     private boolean canPercolate(int currentIndex) {
+        if(!leftChildIsValid(currentIndex)&&!rightChildIsValid(currentIndex)){
+            return false;
+        }
         return data[currentIndex].compareTo(data[getLeftChild(currentIndex)])<0 || data[currentIndex].compareTo(data[getRightChild(currentIndex)])<0;
+    }
+
+    private boolean rightChildIsValid(int currentIndex) {
+        return getRightChild(currentIndex) < size;
+    }
+
+    private boolean leftChildIsValid(int currentIndex) {
+        return getLeftChild(currentIndex) < size;
     }
 
     // Part 4: Write a main method that demonstrates that your priority
