@@ -115,6 +115,22 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     // Part 4: Write a main method that demonstrates that your priority
     // queue works! Try to cover a variety of use cases in your driver.
     public static void main(String[] args) {
-        // TODO: implement me!
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        System.out.println("Adding elements: 10, 5, 6, 2, 4, 3");
+        pq.add(10);
+        pq.add(5);
+        pq.add(6);
+        pq.add(2);
+        pq.add(4);
+        pq.add(3);
+
+        System.out.println("Peek max: " + pq.peek()); // Should print 10
+
+        System.out.println("Polling elements in order:");
+        while (pq.size() > 0) {
+            System.out.print(pq.poll() + " "); // Should print: 10 6 5 4 3 2
+        }
+        System.out.println();
     }
 }
