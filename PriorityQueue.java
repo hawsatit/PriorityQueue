@@ -101,6 +101,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
         T retVal = this.data[0];
         swap(0, size - 1, data);
         int currentIndex = 0;
+        size--;
         while(canPercolate(currentIndex)){
             if (leftChildIsValid(currentIndex) && rightChildIsValid(currentIndex)){
                 if(data[getLeftChild(currentIndex)].compareTo(data[getRightChild(currentIndex)]) > 0){
@@ -118,16 +119,26 @@ public class PriorityQueue<T extends Comparable<? super T>> {
                 currentIndex = getRightChild(currentIndex);
             }
         }
-        size--;
         return retVal;
     }
 
+/*
     private boolean canPercolate(int currentIndex) {
         if(!leftChildIsValid(currentIndex)&&!rightChildIsValid(currentIndex)){
             return false;
         }
-        return data[currentIndex].compareTo(data[getLeftChild(currentIndex)])<0 || data[currentIndex].compareTo(data[getRightChild(currentIndex)])<0;
+        return data[currentIndex].compareTo(data[getLeftChild(currentIndex)] < 0 || data[currentIndex].compareTo(data[getRightChild(currentIndex)]) < 0;
     }
+    */
+
+    private boolean canPercolate(int currentIndex) {
+        boolean canLeft = leftChildIsValid(currentIndex) &&
+                        data[currentIndex].compareTo(data[getLeftChild(currentIndex)]) < 0;
+        boolean canRight = rightChildIsValid(currentIndex) &&
+                        data[currentIndex].compareTo(data[getRightChild(currentIndex)]) < 0;
+        return canLeft || canRight;
+    }
+
 
     private boolean rightChildIsValid(int currentIndex) {
         return getRightChild(currentIndex) < size;
